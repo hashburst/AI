@@ -120,10 +120,98 @@ La reward finale sarà ridotta se:
 Questo sistema incentiva i worker/miner a mantenere alta efficienza (accepted shares) e a mantenere le GPU a temperature adeguate per evitare surriscaldamenti, migliorando l'efficienza complessiva del mining.
 
 ## 5. Struttura del Codice:
-Installazione delle dipendenze: prima di tutto, installare il necessario per far girare il modello AI su Ubuntu.
+Installazione delle dipendenze: prima di tutto, installare il necessario per far girare il modello AI su Ubuntu/Proxmox.
 
                           sudo apt update
                           sudo apt install python3-pip
                           pip3 install torch torchvision torchaudio tensorflow nvidia-pyindex nvidia-tensorflow
 
+Installazione delle librerie di NVidia necessarie per l'uso della GPU H100:
 
+                          sudo apt install nvidia-cuda-toolkit
+
+Codice dell'Algoritmo di RL su PyTorch: il seguente esempio usa un semplice approccio di Q-learning per ottimizzare i parametri del miner. Questo è un esempio da adattare in base ai parametri specifici del miner che si vogliono ottimizzare.
+
+                          import torch
+                          import torch.nn as nn
+                          import torch.optim as optim
+                          import numpy as np
+                          
+                          # Definisci l'architettura del modello di rete neurale
+                          class MinerOptimizationModel(nn.Module):
+                              def __init__(self, input_dim, output_dim):
+                                  super(MinerOptimizationModel, self).__init__()
+                                  self.fc1 = nn.Linear(input_dim, 128)
+                                  self.fc2 = nn.Linear(128, 128)
+                                  self.fc3 = nn.Linear(128, output_dim)
+                              
+                              def forward(self, x):
+                                  x = torch.relu(self.fc1(x))
+                                  x = torch.relu(self.fc2(x))
+                                  x = self.fc3(x)
+                                  return x
+                          
+                          # Imposta i parametri
+                          num_params = 5  # Esempio: intensità, overclock, ecc.
+                          num_actions = 3  # Aumenta, diminuisci, mantieni
+                          
+                          # Crea il modello
+                          model = MinerOptimizationModel(input_dim=num_params, output_dim=num_actions)
+                          optimizer = optim.Adam(model.parameters(), lr=0.001)
+                          loss_fn = nn.MSELoss()
+                          
+                          # Funzione di reward
+                          def calculate_reward(accepted_shares, rejected_shares, gpu_temp):
+                              reward = accepted_shares - rejected_shares
+                              if gpu_temp > 80:
+                                  reward -= 10  # Penalizza temperature alte
+                              return reward
+                          
+                          # Loop principale di ottimizzazione (pseudo-codice)
+                          for episode in range(1000):
+                              state = np.random.rand(num_params)  # Stato attuale del miner
+                              action = model(torch.tensor(state).float()).argmax().item()  # Ottieni l'azione migliore
+                              
+                              # Esegui l'azione (ad esempio aumenta l'intensità)
+                              # Qui chiamerai il software RainbowMiner con i nuovi parametri
+                              
+                              accepted_shares = np.random.randint(95, 100)  # Simulazione del risultato
+                              rejected_shares = np.random.randint(0, 5)
+                              gpu_temp = np.random.randint(60, 90)
+                              
+                              reward = calculate_reward(accepted_shares, rejected_shares, gpu_temp)
+                              # Usa il reward per aggiornare il modello
+                              #...
+
+## 6. Integrazione con RainbowMiner:
+Creazione di un'interfaccia per la modifica dei parametri dei worker con RainbowMiner. L'estratto dello script seguente in Python aggiorna i file di configurazione dei mining software nella cartella BIN senza impiegare l'interfaccia di comando supportata da RainbowMiner.
+                              import subprocess
+                              
+                              def update_miner_params(intensity, overclock):
+                                  # Comando che aggiorna i parametri del miner
+                                  command = f"./RainbowMiner --intensity {intensity} --overclock {overclock}"
+                                  subprocess.run(command, shell=True)
+
+## 7. Monitoraggio delle Performance:
+Il modello deve essere in grado di monitorare i risultati del mining in tempo reale leggendo i log prodotti da RainbowMiner o integrando un'API che fornisca i dati delle performance dei worker. Nel seguente esempio, leggiamo un file di log generato da RainbowMiner che contiene informazioni sulle "accepted" e "rejected shares".
+
+                              def get_mining_stats():
+                                  with open("/path/to/rainbowminer/log.txt", "r") as log_file:
+                                      # Log parsing per estrarre le performance
+                                      accepted_shares = ...
+                                      rejected_shares = ...
+                                      gpu_temp = ...
+                                      return accepted_shares, rejected_shares, gpu_temp
+
+Utilizzando l'approccio descritto (reinforcement learning, ottimizzazione bayesiana o simili) è possibile ottimizzare i parametri dei miner per garantire la massima efficienza dei worker e il miglior utilizzo delle GPU NVidia H100. 
+
+Per espandere l'algoritmo di ottimizzazione dei miner con le due funzionalità richieste (aggiornamento automatico dei parametri nei file di configurazione di RainbowMiner e creazione di una dashboard per monitorare i risultati), implementeremo i seguenti punti:
+
+- ## Integrazione con i file di configurazione di RainbowMiner in tempo reale:
+
+-- Aggiorneremo automaticamente i parametri ottimizzati nei file di configurazione dei miner, che si trovano nella cartella BIN di RainbowMiner.
+L'algoritmo sarà in grado di scrivere i valori ottimizzati in tempo reale nei file .config o .json relativi alla configurazione del miner.
+-- Dashboard per visualizzare i risultati:
+
+Costruiremo una dashboard basata su Flask per visualizzare i parametri ottimizzati e le metriche di performance in tempo reale, come accepted share ratio, rejected share ratio, e profitto.
+La dashboard mostrerà anche un grafico con l'andamento delle metriche, usando Plotly o Matplotlib per la visualizzazione.
