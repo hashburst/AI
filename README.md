@@ -122,6 +122,8 @@ Questo sistema incentiva i worker/miner a mantenere alta efficienza (accepted sh
 ## 5. Struttura del Codice:
 Installazione delle dipendenze: prima di tutto, installare il necessario per far girare il modello AI su Ubuntu.
 
-sudo apt update
-sudo apt install python3-pip
-pip3 install torch torchvision torchaudio tensorflow nvidia-pyindex nvidia-tensorflow
+                          sudo apt update
+                          sudo apt install python3-pip
+                          pip3 install torch torchvision torchaudio tensorflow nvidia-pyindex nvidia-tensorflow
+
+
