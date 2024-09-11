@@ -109,7 +109,8 @@ Risultati attesi:
 La reward finale sarà ridotta se:
 
 - Il miner ha un numero di rejected shares alto.
-- La temperatura della GPU è troppo alta.Le accepted shares sono basse rispetto al totale atteso (100%).
+- La temperatura della GPU è troppo alta.
+- Le accepted shares sono basse rispetto al totale atteso (100%).
 - Il contributo del miner rispetto al cluster è proporzionalmente basso.
 
 Questo sistema incentiva i worker/miner a mantenere alta efficienza (accepted shares) e a mantenere le GPU a temperature adeguate per evitare surriscaldamenti, migliorando l'efficienza complessiva del mining.
