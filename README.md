@@ -207,11 +207,50 @@ Utilizzando l'approccio descritto (reinforcement learning, ottimizzazione bayesi
 
 Per espandere l'algoritmo di ottimizzazione dei miner con le due funzionalità richieste (aggiornamento automatico dei parametri nei file di configurazione di RainbowMiner e creazione di una dashboard per monitorare i risultati), implementeremo i seguenti punti:
 
-- ## Integrazione con i file di configurazione di RainbowMiner in tempo reale:
+### Integrazione con i file di configurazione di RainbowMiner in tempo reale:
 
--- Aggiorneremo automaticamente i parametri ottimizzati nei file di configurazione dei miner, che si trovano nella cartella BIN di RainbowMiner.
-L'algoritmo sarà in grado di scrivere i valori ottimizzati in tempo reale nei file .config o .json relativi alla configurazione del miner.
--- Dashboard per visualizzare i risultati:
+- Aggiornamento automatico dei parametri ottimizzati nei file di configurazione dei miner che si trovano nella cartella BIN di RainbowMiner. L'algoritmo sarà in grado di scrivere i valori ottimizzati in tempo reale nei file .config o .json relativi alla configurazione del miner.
+- Dashboard per visualizzare i risultati: costruzione di una dashboard basata su Flask per visualizzare i parametri ottimizzati e le metriche di performance in tempo reale, come "accepted share ratio", "1rejected share ratio". La dashboard mostrerà anche un grafico con l'andamento delle metriche, usando Plotly o Matplotlib per la visualizzazione.
+  
+### Integrazione con i file di configurazione di RainbowMiner
 
-Costruiremo una dashboard basata su Flask per visualizzare i parametri ottimizzati e le metriche di performance in tempo reale, come accepted share ratio, rejected share ratio, e profitto.
-La dashboard mostrerà anche un grafico con l'andamento delle metriche, usando Plotly o Matplotlib per la visualizzazione.
+Il miner utilizza file di configurazione per controllare i parametri. In questo caso, presupponiamo che i file di configurazione siano nel formato JSON o in formato testuale leggibile, quindi con la possibilità di aggiornare i valori rilevanti. La seguente funzione Python aggiorna i parametri in un file di configurazione JSON del miner.
+
+Codice per aggiornare i parametri di configurazione:
+
+                                    import json
+                                    import os
+                                    
+                                    # Path alla directory BIN di RainbowMiner
+                                    CONFIG_PATH = "/path/to/RainbowMiner/BIN"
+                                    
+                                    # Funzione per aggiornare i parametri del miner in tempo reale
+                                    def update_miner_config(miner_name, new_params):
+                                        config_file = os.path.join(CONFIG_PATH, f"{miner_name}.config.json")  # Presupponendo formato JSON
+                                        try:
+                                            # Carica la configurazione corrente
+                                            with open(config_file, 'r') as f:
+                                                config_data = json.load(f)
+                                            
+                                            # Aggiorna i parametri nel file
+                                            for key, value in new_params.items():
+                                                if key in config_data:
+                                                    config_data[key] = value
+                                    
+                                            # Scrivi le modifiche al file di configurazione
+                                            with open(config_file, 'w') as f:
+                                                json.dump(config_data, f, indent=4)
+                                    
+                                            print(f"Parametri del miner {miner_name} aggiornati con successo.")
+                                        except Exception as e:
+                                            print(f"Errore nell'aggiornamento del file di configurazione del miner {miner_name}: {str(e)}")
+                                    
+                                    # Esempio di utilizzo della funzione
+                                    miner_name = "miner_example"
+                                    new_params = {
+                                        "gpu_threads": 2,
+                                        "intensity": 30,
+                                        "worksize": 256
+                                    }
+                                    update_miner_config(miner_name, new_params)
+
