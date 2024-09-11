@@ -29,8 +29,8 @@ Obiettivo: massimizzare le "accepted shares", minimizzare le "rejected shares" e
 
 ## 4. Modello AI e RL Environment:
 
-- Stato (State): I parametri del miner (es. intensità, parallelizzazione, hashrate corrente, temperatura GPU).
+- Stato (State): i parametri del miner (es. intensità, parallelizzazione, hashrate corrente, temperatura GPU).
 
-- Azione (Action): Modifica dei parametri del miner, come intensità, tipo di algoritmo, impostazioni di overclocking, ecc.
+- Azione (Action): modifica dei parametri del miner, come intensità, tipo di algoritmo, impostazioni di overclocking, ecc.
 
-- Ricompensa (Reward): La reward sarà massimizzata se le accepted share sono al 100% e le rejected share sono a 0%. Potresti usare la funzione:
+- Ricompensa (Reward): la reward sarà massimizzata se le "accepted share" si attesteranno al 100% e "le rejected share" si approssimeranno allo 0%. Utilizzeremo la seguente funzione:
