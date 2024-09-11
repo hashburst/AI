@@ -10,3 +10,27 @@ Software di Mining: RainbowMiner
 Framework di AI: ti suggerisco di usare un framework open-source come PyTorch o TensorFlow che supportano CUDA per utilizzare al meglio le GPU NVidia H100.
 Obiettivo: ottimizzare i parametri del miner per massimizzare le accepted share (100%) e ridurre a 0 le rejected share.
 
+## 2. Scelta del Framework AI:
+Considerando l'hardware NVidia H100 e la necessità di ottimizzazione basata su dati real-time, PyTorch è una scelta eccellente per la flessibilità e il supporto nativo di CUDA, ma TensorFlow potrebbe essere un'alternativa valida.
+
+## 3. Approccio dell'Algoritmo:
+Per l'algoritmo da implementare si intende usare un approccio basato su reinforcement learning (RL) o ottimizzazione bayesiana per migliorare progressivamente le performance del mining software.
+
+L'algoritmo può monitorare i seguenti parametri per ogni worker:
+
+- Accepted shares
+- Rejected shares
+- Temperature delle GPU
+- Hashrate
+- Efficienza energetica
+- Altri parametri relativi ai singoli miner (es. intensità di lavoro, parallelizzazione)
+
+Obiettivo: massimizzare le "accepted shares", minimizzare le "rejected shares" e mantenere la temperatura delle GPU sotto controllo.
+
+## 4. Modello AI e RL Environment:
+
+- Stato (State): I parametri del miner (es. intensità, parallelizzazione, hashrate corrente, temperatura GPU).
+
+- Azione (Action): Modifica dei parametri del miner, come intensità, tipo di algoritmo, impostazioni di overclocking, ecc.
+
+- Ricompensa (Reward): La reward sarà massimizzata se le accepted share sono al 100% e le rejected share sono a 0%. Potresti usare la funzione:
