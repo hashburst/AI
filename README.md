@@ -34,3 +34,11 @@ Obiettivo: massimizzare le "accepted shares", minimizzare le "rejected shares" e
 - Azione (Action): modifica dei parametri del miner, come intensità, tipo di algoritmo, impostazioni di overclocking, ecc.
 
 - Ricompensa (Reward): la reward sarà massimizzata se le "accepted share" si attesteranno al 100% e "le rejected share" si approssimeranno allo 0%. Utilizzeremo la seguente funzione:
+
+                                                      ### Reward = 100 − (RejectedShares) − (AcceptedShares<100)
+
+In aggiunta a questa formula base, occorre introdurre una penalizzazione sulla reward se la temperatura delle GPU supera un certo limite. A questo punto vediamo come ampliare la formula di Reward che consideri anche la temperatura delle GPU e come considerare il contributo proporzionale dell'utente rispetto al totale delle "accepted shares" nel Cluster. Introduciamo due nuovi concetti:
+
+- Penalizzazione per alte temperature: se la temperatura della GPU supera il 90%, applichiamo una penalizzazione alla reward. La penalizzazione sarà più alta quanto maggiore è la temperatura rispetto alla soglia di 90%.
+  
+- Proporzionalità del contributo alle accepted shares del cluster: il contributo di ogni worker/miner è proporzionale al numero di "accepted shares" che ha inviato rispetto al numero totale di "accepted shares" nel cluster di appartenenza.
