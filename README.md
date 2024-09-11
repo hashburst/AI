@@ -100,4 +100,16 @@ Ecco come implementare la nuova formula di reward in Python:
 
 Spiegazione:
 
+- penalty_temp: se la temperatura della GPU supera i 90°C, viene applicata una penalizzazione proporzionale all'eccesso di temperatura.
+- penalty_accepted: penalizzazione se le accepted shares non raggiungono il 100%. Questa penalizzazione è moltiplicata per il contributo proporzionale del miner.
+- share_contribution: determina quanto il contributo del miner sia importante rispetto al cluster, ovvero se il miner invia molte accepted shares, riceverà una penalizzazione minore, ma se contribuisce poco rispetto agli altri, la penalizzazione sarà maggiore.
 
+Risultati attesi:
+
+La reward finale sarà ridotta se:
+
+- Il miner ha un numero di rejected shares alto.
+- La temperatura della GPU è troppo alta.Le accepted shares sono basse rispetto al totale atteso (100%).
+- Il contributo del miner rispetto al cluster è proporzionalmente basso.
+
+Questo sistema incentiva i worker/miner a mantenere alta efficienza (accepted shares) e a mantenere le GPU a temperature adeguate per evitare surriscaldamenti, migliorando l'efficienza complessiva del mining.
