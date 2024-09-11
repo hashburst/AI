@@ -13,7 +13,7 @@ Obiettivo: ottimizzare i parametri del miner per massimizzare le accepted share 
 ## 2. Scelta del Framework AI:
 Considerando l'hardware NVidia H100 e la necessità di ottimizzazione basata su dati real-time, PyTorch è una scelta eccellente per la flessibilità e il supporto nativo di CUDA, ma TensorFlow potrebbe essere un'alternativa valida.
 
-## 3. Approccio dell'Algoritmo:
+## 3. Approccio dell'Algoritmo:
 Per l'algoritmo da implementare si intende usare un approccio basato su reinforcement learning (RL) o ottimizzazione bayesiana per migliorare progressivamente le performance del mining software.
 
 L'algoritmo può monitorare i seguenti parametri per ogni worker:
@@ -35,10 +35,34 @@ Obiettivo: massimizzare le "accepted shares", minimizzare le "rejected shares" e
 
 - Ricompensa (Reward): la reward sarà massimizzata se le "accepted share" si attesteranno al 100% e "le rejected share" si approssimeranno allo 0%. Utilizzeremo la seguente funzione:
 
-                                                      ### Reward = 100 − (RejectedShares) − (AcceptedShares<100)
+                          Reward = 100 − (RejectedShares) − (AcceptedShares<100)
 
 In aggiunta a questa formula base, occorre introdurre una penalizzazione sulla reward se la temperatura delle GPU supera un certo limite. A questo punto vediamo come ampliare la formula di Reward che consideri anche la temperatura delle GPU e come considerare il contributo proporzionale dell'utente rispetto al totale delle "accepted shares" nel Cluster. Introduciamo due nuovi concetti:
 
-- Penalizzazione per alte temperature: se la temperatura della GPU supera il 90%, applichiamo una penalizzazione alla reward. La penalizzazione sarà più alta quanto maggiore è la temperatura rispetto alla soglia di 90%.
+- Penalizzazione per alte temperature: se la temperatura della GPU supera il 90%, applichiamo una penalizzazione alla reward. La penalizzazione sarà più alta quanto maggiore è la temperatura rispetto alla soglia di 90°C.
   
 - Proporzionalità del contributo alle accepted shares del cluster: il contributo di ogni worker/miner è proporzionale al numero di "accepted shares" che ha inviato rispetto al numero totale di "accepted shares" nel cluster di appartenenza.
+
+## Estensione della formula
+
+Definiamo le seguenti variabili aggiuntive:
+
+- T_gpu: Temperatura della GPU.
+- T_max: Temperatura massima tollerata (90°C in questo caso).
+- accepted_user: Numero di accepted shares inviate dal singolo miner.
+- total_accepted_cluster: Numero totale di accepted shares inviate dall'intero cluster.
+- penalty_temp: Penalizzazione basata sulla temperatura.
+- share_contribution: Contributo proporzionale di un miner in termini di accepted shares rispetto al cluster.
+
+La nuova formula della reward può essere scritta come:
+
+                          Reward = 100 − RejectedShares − Penalty(temp) − (AcceptedShares<100) × P(accept) × (1 − total_accepted_cluster/accepted_user)
+
+Dove:
+
+- Penalty(temp) =  max(0,T_gpu − T_max): penalizzazione basata sull'eccesso di temperatura rispetto alla soglia di 90°C.
+- P(accept) = AcceptedShares<100: penalizzazione per non aver raggiunto il 100% di accepted shares.
+
+## Implementazione del codice Python
+
+Ecco come implementare la nuova formula di reward in Python:
