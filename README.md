@@ -380,11 +380,15 @@ Dashboard per visualizzare i risultati: utilizzando Flask, la funzione generate_
 
 ### Esecuzione della Dashboard
 
-Avvia l'applicazione Flask:
+Avviare l'applicazione Flask:
 
                                   python app.py
 
-Visita http://localhost:5000 nel browser per vedere la dashboard con i grafici che mostrano i dati del mining.
+Visitare la seguente url nel browser:
+
+                                  http://localhost:5000  
+                                  
+per visualizzare la dashboard con i grafici che mostrano i dati del mining.
 
 Con questi componenti si definisce un sistema che:
 
