@@ -37,13 +37,17 @@ Obiettivo: massimizzare le "accepted shares", minimizzare le "rejected shares" e
 
                           Reward = 100 − (RejectedShares) − (AcceptedShares<100)
 
-In aggiunta a questa formula base, occorre introdurre una penalizzazione sulla reward se la temperatura delle GPU supera un certo limite. A questo punto vediamo come ampliare la formula di Reward che consideri anche la temperatura delle GPU e come considerare il contributo proporzionale dell'utente rispetto al totale delle "accepted shares" nel Cluster. Introduciamo due nuovi concetti:
+In aggiunta a questa formula base, occorre introdurre una penalizzazione sulla reward se la temperatura delle GPU supera un certo limite. 
+
+- Ambiente (Environment): il mining stesso può essere visto come un ambiente RL dove il modello esplora diverse configurazioni di parametri per ottimizzare i risultati.
+
+A questo punto vediamo come ampliare la formula di Reward che consideri anche la temperatura delle GPU e come considerare il contributo proporzionale dell'utente rispetto al totale delle "accepted shares" nel Cluster. Introduciamo due nuovi concetti:
 
 - Penalizzazione per alte temperature: se la temperatura della GPU supera il 90%, applichiamo una penalizzazione alla reward. La penalizzazione sarà più alta quanto maggiore è la temperatura rispetto alla soglia di 90°C.
   
 - Proporzionalità del contributo alle accepted shares del cluster: il contributo di ogni worker/miner è proporzionale al numero di "accepted shares" che ha inviato rispetto al numero totale di "accepted shares" nel cluster di appartenenza.
 
-## Estensione della formula
+### Estensione della formula
 
 Definiamo le seguenti variabili aggiuntive:
 
@@ -63,7 +67,7 @@ Dove:
 - Penalty(temp) =  max(0,T_gpu − T_max): penalizzazione basata sull'eccesso di temperatura rispetto alla soglia di 90°C.
 - P(accept) = AcceptedShares<100: penalizzazione per non aver raggiunto il 100% di accepted shares.
 
-## Implementazione del codice Python
+### Implementazione del codice Python
 
 Ecco come implementare la nuova formula di reward in Python:
 
@@ -114,3 +118,10 @@ La reward finale sarà ridotta se:
 - Il contributo del miner rispetto al cluster è proporzionalmente basso.
 
 Questo sistema incentiva i worker/miner a mantenere alta efficienza (accepted shares) e a mantenere le GPU a temperature adeguate per evitare surriscaldamenti, migliorando l'efficienza complessiva del mining.
+
+## 5. Struttura del Codice:
+Installazione delle dipendenze: prima di tutto, installare il necessario per far girare il modello AI su Ubuntu.
+
+sudo apt update
+sudo apt install python3-pip
+pip3 install torch torchvision torchaudio tensorflow nvidia-pyindex nvidia-tensorflow
