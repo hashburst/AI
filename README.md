@@ -254,3 +254,140 @@ Codice per aggiornare i parametri di configurazione:
                                     }
                                     update_miner_config(miner_name, new_params)
 
+In questo script, i nuovi parametri vengono aggiornati nel file di configurazione del miner in tempo reale, quindi il sistema può effettuare un'ottimizzazione dinamica dei miner.
+
+## Dashboard per monitorare i risultati
+
+Per costruire la dashboard utilizzeremo Flask per servire una semplice applicazione web e Plotly per visualizzare le metriche in grafici interattivi.
+
+- Passo 1: Installazione delle dipendenze necessarie
+
+                                    pip install flask plotly pandas
+
+- Passo 2: Creazione della dashboard con Flask: il codice qui di seguito mostra come creare un'applicazione Flask che visualizza le metriche di mining e aggiorna i dati in tempo reale. Il codice per la dashboard è:
+
+                                    from flask import Flask, render_template, jsonify
+                                    import plotly.graph_objs as go
+                                    import pandas as pd
+                                    import os
+                                    
+                                    app = Flask(__name__)
+                                    
+                                    # Path dove si trovano i dati del mining
+                                    DATA_PATH = "/path/to/data/mining_data.csv"
+                                    
+                                    # Funzione per leggere i dati delle performance del miner
+                                    def get_mining_data():
+                                        if os.path.exists(DATA_PATH):
+                                            df = pd.read_csv(DATA_PATH)
+                                            return df
+                                        else:
+                                            # Simulazione dati se il file non esiste
+                                            data = {
+                                                "time": pd.date_range(start="2023-09-01", periods=100, freq='H'),
+                                                "accepted_share_ratio": np.random.uniform(0.90, 1.0, size=100),
+                                                "rejected_share_ratio": np.random.uniform(0.0, 0.1, size=100),
+                                                "profit": np.random.uniform(0.1, 1.0, size=100)
+                                            }
+                                            df = pd.DataFrame(data)
+                                            return df
+                                    
+                                    # Endpoint per restituire i dati in formato JSON
+                                    @app.route("/data")
+                                    def data():
+                                        df = get_mining_data()
+                                        return df.to_json(orient='records')
+                                    
+                                    # Homepage della dashboard
+                                    @app.route("/")
+                                    def index():
+                                        return render_template("index.html")
+                                    
+                                    # Codice per i grafici Plotly
+                                    def generate_plot():
+                                        df = get_mining_data()
+                                    
+                                        trace1 = go.Scatter(
+                                            x=df['time'],
+                                            y=df['accepted_share_ratio'],
+                                            mode='lines',
+                                            name='Accepted Share Ratio'
+                                        )
+                                    
+                                        trace2 = go.Scatter(
+                                            x=df['time'],
+                                            y=df['rejected_share_ratio'],
+                                            mode='lines',
+                                            name='Rejected Share Ratio'
+                                        )
+                                    
+                                        trace3 = go.Scatter(
+                                            x=df['time'],
+                                            y=df['profit'],
+                                            mode='lines',
+                                            name='Profit'
+                                        )
+                                    
+                                        layout = go.Layout(
+                                            title='Miner Performance Over Time',
+                                            xaxis={'title': 'Time'},
+                                            yaxis={'title': 'Metric'},
+                                            hovermode='closest'
+                                        )
+                                    
+                                        fig = go.Figure(data=[trace1, trace2, trace3], layout=layout)
+                                        return fig.to_html()
+                                    
+                                    @app.route("/plot")
+                                    def plot():
+                                        plot_html = generate_plot()
+                                        return plot_html
+                                    
+                                    if __name__ == "__main__":
+                                        app.run(debug=True)
+
+### Template HTML per la dashboard
+
+Il file "index.html" che si trova nella directory templates:
+
+                                    <!DOCTYPE html>
+                                    <html lang="en">
+                                    <head>
+                                        <meta charset="UTF-8">
+                                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                        <title>Miner Performance Dashboard</title>
+                                        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+                                    </head>
+                                    <body>
+                                        <h1>Miner Performance Dashboard</h1>
+                                        <div id="graph"></div>
+                                        <script>
+                                            fetch('/plot')
+                                            .then(response => response.text())
+                                            .then(data => {
+                                                var graphDiv = document.getElementById('graph');
+                                                graphDiv.innerHTML = data;
+                                            });
+                                        </script>
+                                    </body>
+                                    </html>
+
+Spiegazione del codice:
+
+Aggiornamento automatico dei parametri: la funzione update_miner_config() permette di aggiornare i parametri nei file di configurazione del miner in tempo reale. Ogni volta che il modello RL decide di cambiare i parametri, questi verranno salvati nel file di configurazione.
+
+Dashboard per visualizzare i risultati: utilizzando Flask, la funzione generate_plot() crea un grafico interattivo che mostra l'andamento delle metriche di mining nel tempo, come accepted_share_ratio, rejected_share_ratio, e profit. Questi dati possono essere aggiornati periodicamente in tempo reale grazie ai grafici generati dinamicamente.
+
+### Esecuzione della Dashboard
+
+Avvia l'applicazione Flask:
+
+                                  python app.py
+
+Visita http://localhost:5000 nel browser per vedere la dashboard con i grafici che mostrano i dati del mining.
+
+Con questi componenti si definisce un sistema che:
+
+- Ottimizza i parametri del miner in tempo reale utilizzando un modello AI.
+- Aggiorna automaticamente i file di configurazione del miner.
+- Fornisce una dashboard interattiva per monitorare le performance e i parametri ottimizzati in tempo reale.
