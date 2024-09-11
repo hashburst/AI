@@ -47,12 +47,12 @@ In aggiunta a questa formula base, occorre introdurre una penalizzazione sulla r
 
 Definiamo le seguenti variabili aggiuntive:
 
-- T_gpu: Temperatura della GPU.
-- T_max: Temperatura massima tollerata (90°C in questo caso).
-- accepted_user: Numero di accepted shares inviate dal singolo miner.
-- total_accepted_cluster: Numero totale di accepted shares inviate dall'intero cluster.
-- penalty_temp: Penalizzazione basata sulla temperatura.
-- share_contribution: Contributo proporzionale di un miner in termini di accepted shares rispetto al cluster.
+- T_gpu: temperatura della GPU.
+- T_max: temperatura massima tollerata (90°C in questo caso).
+- accepted_user: numero di accepted shares inviate dal singolo miner.
+- total_accepted_cluster: numero totale di accepted shares inviate dall'intero cluster.
+- penalty_temp: penalizzazione basata sulla temperatura.
+- share_contribution: contributo proporzionale di un miner in termini di accepted shares rispetto al cluster.
 
 La nuova formula della reward può essere scritta come:
 
