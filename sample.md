@@ -1,7 +1,7 @@
 # Example usage
                   api_key = "YOUR_API_KEY"
                   miner = "miner-software"
-                  algo = "sha256"
+                  algo = "sha256, scrypt, x11, ..."
                   pool = "stratum.pool.tld"
                   port = "3333"
                   account = "account_name"
