@@ -12,7 +12,7 @@
                   
                   generate_config(api_key, miner, algo, pool, port, account, subaccount, coin, num_miners)
 
-# Esempio di utilizzo della funzione
+# Esempio di calcolo delle reward in funzione dell'ottimizzazione dei parametri
 
                   rejected_shares = 10
                   accepted_shares = 95
